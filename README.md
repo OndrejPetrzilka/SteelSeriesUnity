@@ -14,3 +14,6 @@ Handler configuration is complex, in this implementation handlers are configured
 # Scope
 - same scope as original Unity implementation
 - does not include support for screen handlers
+
+# License
+MIT
