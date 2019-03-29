@@ -5,6 +5,7 @@ Handler configuration is complex, in this implementation handlers are configured
 
 # Why?
 - faster, less allocations, extensible
+- does not use FullSerializer
 - uses reusable HttpClient
 - events testable in Editor without entering PlayMode
 - uses less assets for configuration
