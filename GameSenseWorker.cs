@@ -31,7 +31,7 @@ namespace SteelSeries.GameSense
         public TimeSpan HeartbeatInterval = TimeSpan.FromSeconds(1);
         public TimeSpan SleepDuration = TimeSpan.FromMilliseconds(10);
         public TimeSpan ServerDownInterval = TimeSpan.FromSeconds(5);
-        public bool Logging = true;
+        public bool Logging = false;
 
         public bool IsRunning
         {
@@ -89,7 +89,8 @@ namespace SteelSeries.GameSense
 
         void WorkerThread()
         {
-            using (HttpClient client = new HttpClient())
+            ServicePointManager.DefaultConnectionLimit = 100;
+            using (HttpClient client = new HttpClient(new HttpClientHandler() { Proxy = null, UseProxy = false }))
             {
                 var timer = System.Diagnostics.Stopwatch.StartNew();
 
@@ -152,19 +153,21 @@ namespace SteelSeries.GameSense
             }
         }
 
-        private Task<HttpResponseMessage> Send(HttpClient client, string url, byte[] payload, int payloadLength)
+        private void Send(HttpClient client, string url, byte[] payload, int payloadLength)
         {
-            // Could be optimized further by using TcpClient and writing HTTP requests manually
             var content = new ByteArrayContent(payload, 0, payloadLength);
             content.Headers.ContentType = m_mediaType;
-            return client.PostAsync(url, content);
+            System.Threading.Tasks.Task.Factory.StartNew(async () => await client.PostAsync(url, content));
         }
 
         private bool SendAndValidate(HttpClient client, string url, byte[] payload, int payloadLength)
         {
             try
             {
-                var response = Send(client, url, payload, payloadLength).Result;
+                var content = new ByteArrayContent(payload, 0, payloadLength);
+                content.Headers.ContentType = m_mediaType;
+
+                var response = client.PostAsync(url, content).Result;
                 if (!response.IsSuccessStatusCode)
                 {
                     var responseText = response.Content.ReadAsStringAsync().Result;

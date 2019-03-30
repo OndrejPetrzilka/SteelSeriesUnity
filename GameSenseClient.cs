@@ -74,6 +74,7 @@ namespace SteelSeries.GameSense
 
         public void RegisterEvent(string gameName, string eventName, int minValue, int maxValue, EventIconId iconId, bool valueOptional = false)
         {
+            string valueOptionalText = valueOptional ? "true" : "false";
             string msg = $@"
             {{
                 ""game"": ""{gameName}"",
@@ -81,7 +82,7 @@ namespace SteelSeries.GameSense
                 ""min_value"": {minValue},
                 ""max_value"": {maxValue},
                 ""icon_id"": {(int)iconId},
-                ""value_optional"": {valueOptional}
+                ""value_optional"": {valueOptionalText}
             }}";
             SendCustomMessage("register_game_event", msg);
         }

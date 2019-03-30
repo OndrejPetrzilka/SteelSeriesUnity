@@ -61,7 +61,14 @@ namespace SteelSeries.GameSense
         /// </summary>
         public static void BindEvent(string eventName, int minValue, int maxValue, EventIconId iconId, string[] handlers)
         {
-            m_client.BindEvent(m_gameName, eventName, minValue, maxValue, iconId, handlers);
+            if (handlers.Length == 0)
+            {
+                m_client.RegisterEvent(m_gameName, eventName, minValue, maxValue, iconId);
+            }
+            else
+            {
+                m_client.BindEvent(m_gameName, eventName, minValue, maxValue, iconId, handlers);
+            }
         }
 
         /// <summary>

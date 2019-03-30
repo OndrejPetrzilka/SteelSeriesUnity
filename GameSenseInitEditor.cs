@@ -45,9 +45,10 @@ public class GameSenseInitEditor : Editor
         using (new EditorGUI.DisabledScope(index < 0))
         {
             EditorGUI.BeginChangeCheck();
-            m_value = EditorGUILayout.IntSlider("Event data", m_value, evnt.MinValue, evnt.MaxValue);
-            if (EditorGUI.EndChangeCheck())
+            int newValue = EditorGUILayout.IntSlider("Event data", m_value, evnt.MinValue, evnt.MaxValue);
+            if (EditorGUI.EndChangeCheck() && m_value != newValue)
             {
+                m_value = newValue;
                 GameSense.SendEvent(evnt.Name, m_value);
             }
         }
